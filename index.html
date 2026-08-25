@@ -143,8 +143,11 @@ a{color:inherit}
 
 /* advisor */
 .advisor{display:grid;gap:clamp(2rem,5vw,4rem);align-items:center}
-@media(min-width:820px){.advisor{grid-template-columns:auto minmax(0,1fr)}}
-.advisor__mono{width:clamp(92px,12vw,132px);justify-self:center}
+@media(min-width:820px){.advisor{grid-template-columns:minmax(0,.72fr) minmax(0,1fr)}}
+.portrait{position:relative;aspect-ratio:4/5;overflow:hidden;background:var(--char)}
+.portrait img{width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+.portrait::after{content:"";position:absolute;inset:.75rem;border:1px solid rgba(195,161,91,.55);pointer-events:none}
+.portrait figcaption{position:absolute;left:0;right:0;bottom:0;padding:3.5rem 1.6rem 1.4rem;font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(246,241,231,.9);background:linear-gradient(180deg,transparent,rgba(20,18,15,.82));margin:0}
 .signature{font-family:'Pinyon Script',cursive;font-size:2.1rem;line-height:1;color:var(--gold);margin:1.8rem 0 0}
 
 /* form */
@@ -229,7 +232,7 @@ a{color:inherit}
     </div>
     <p class="hero__meta anim-2">Myrtle Beach, South Carolina &mdash; six miles from the Atlantic</p>
     <div class="hero__actions anim-3">
-      <a class="btn btn--solid" href="#enquire">See what&rsquo;s available</a>
+      <a class="btn btn--solid" href="#enquire" id="ctaListings" data-rg="listings">See what&rsquo;s available</a>
       <a class="btn" href="#water">Why people buy here</a>
     </div>
   </div>
@@ -310,7 +313,11 @@ a{color:inherit}
     </ul>
 
     <p style="margin-top:2.6rem;max-width:38rem;color:var(--taupe);font-size:.95rem">Asking prices move with what is standing at the time, so a figure printed on a page is stale within a season. For where the band actually sits this month &mdash; and what the last comparable sales closed at rather than listed at &mdash; ask Dejana for the current report.</p>
-    <p style="margin-top:2rem"><a class="btn btn--ink" href="#enquire">Request the current market report</a></p>
+    <p style="margin-top:2rem;display:flex;flex-wrap:wrap;gap:1rem">
+      <a class="btn btn--ink" href="#enquire" data-rg="marketReport">Request the current market report</a>
+      <a class="btn btn--ink" href="#enquire" data-rg="valuation">What is my home worth?</a>
+      <a class="btn btn--ink" href="#enquire" data-rg="listings">Browse homes for sale</a>
+    </p>
   </div>
 </section>
 
@@ -330,7 +337,10 @@ a{color:inherit}
 
 <section class="section section--dark" id="advisor">
   <div class="wrap advisor reveal">
-    <img class="advisor__mono" src="assets/monogram.png" alt="Dejana Ikonic monogram" width="132" height="154">
+    <figure class="portrait" style="margin:0">
+      <img src="assets/dejana-portrait.jpg" alt="Dejana Ikonic, REALTOR with Coldwell Banker Sea Coast Advantage" width="1600" height="2000" loading="lazy">
+      <figcaption>Dejana Ikonic &middot; REALTOR&reg;</figcaption>
+    </figure>
     <div class="prose">
       <p class="eyebrow">Your advisor</p>
       <h2 class="display h2" style="max-width:18ch">Dejana Ikonic</h2>
@@ -490,7 +500,15 @@ const CONFIG = {
   ga4:             "",
   googleReviewUrl: "",
   leadEndpoint:    "",
-  fallbackEmail:   "dejanaikonic@seacoastrealty.com"
+  fallbackEmail:   "dejanaikonic@seacoastrealty.com",
+
+  // Real Geeks — paste the URLs when the site is live.
+  // Any left blank keep pointing at the enquiry form, so nothing breaks.
+  realGeeks: {
+    listings:     "",  // saved search filtered to Carolina Waterway Plantation
+    marketReport: "",  // CWP market report / market insider page
+    valuation:    ""   // seller home-valuation ("what's my home worth") page
+  }
 };
 
 window.dataLayer = window.dataLayer || [];
@@ -526,6 +544,18 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
 document.querySelectorAll('[data-track]').forEach(el => {
   el.addEventListener('click', () => track('contact_' + el.dataset.track));
+});
+
+/* Real Geeks links. A blank URL leaves the button pointing at the enquiry form. */
+document.querySelectorAll('[data-rg]').forEach(el => {
+  const key = el.dataset.rg;
+  const url = (CONFIG.realGeeks || {})[key];
+  if (url) {
+    el.href = url;
+    el.target = '_blank';
+    el.rel = 'noopener';
+  }
+  el.addEventListener('click', () => track('rg_' + key, { destination: url ? 'realgeeks' : 'form' }));
 });
 
 const form   = document.getElementById('leadForm');

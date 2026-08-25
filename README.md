@@ -12,8 +12,31 @@ assets/
   hero-1280.mp4     ← 720p, 2.6 MB (mobile)
   hero-poster.jpg   ← poster / OG image
   monogram.png      ← DI monogram, white keyed to alpha, 861×1002
+  dejana-portrait.jpg ← headshot, 1600×2000 (4:5), from her HEIC
   favicon-180.png
 ```
+
+## Real Geeks links
+
+Three buttons are pre-wired and currently fall back to the enquiry form. Paste URLs into
+`CONFIG.realGeeks` at the bottom of index.html and they retarget automatically — no markup
+changes:
+
+```js
+realGeeks: {
+  listings:     "",  // saved search filtered to Carolina Waterway Plantation
+  marketReport: "",  // CWP market report / market insider page
+  valuation:    ""   // seller home-valuation page
+}
+```
+
+Buttons using them: hero "See what's available" (`listings`), and in the Homes section
+"Request the current market report" (`marketReport`), "What is my home worth?" (`valuation`),
+"Browse homes for sale" (`listings`). Each fires a GA4 `rg_<key>` event tagged with whether it
+went to Real Geeks or to the form, so you can see which slots actually earn their place.
+
+Append UTMs to the Real Geeks URLs (e.g. `?utm_source=cwp-page&utm_medium=cta`) so leads
+captured on their side are attributable back to this page.
 
 ## Page architecture
 
