@@ -27,7 +27,7 @@
 <style>
 :root{
   --ink:#14120F; --char:#26221D; --cream:#F6F1E7; --beige:#E5DCC9;
-  --taupe:#8E8474; --coffee:#4B3A2A;
+  --taupe:#655C50; --coffee:#4B3A2A;
   --gold:#C3A15B; --gold-lt:#EBD9AC; --gold-dk:#9A7534;
   --measure:34rem; --gutter:clamp(1.5rem,6vw,7rem);
 }
@@ -43,7 +43,7 @@ img,video{display:block;max-width:100%}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--gold);outline-offset:4px}
 
-.eyebrow{font-size:.625rem;font-weight:400;letter-spacing:.42em;text-transform:uppercase;color:var(--taupe);margin:0 0 1.75rem}
+.eyebrow{font-size:.72rem;font-weight:400;letter-spacing:.32em;text-transform:uppercase;color:var(--taupe);margin:0 0 1.75rem}
 .display{font-family:'Bodoni Moda',Didot,serif;font-weight:400;line-height:1.06;letter-spacing:.01em;margin:0}
 .h2{font-size:clamp(1.9rem,1.2rem + 2.6vw,3.4rem)}
 .lede{font-size:clamp(1.06rem,1rem + .45vw,1.3rem);line-height:1.72;color:var(--coffee)}
@@ -185,6 +185,27 @@ a{color:inherit}
 .footer__legal{margin:2.5rem 0 0;max-width:60rem}
 .footer__legal p{margin:0 0 .8rem}
 .footer__badges{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase}
+
+/* legibility pass — every value below is measured to clear WCAG AA (4.5:1) */
+.section--dark,.facts,.footer{--taupe:#A79C8A}
+.nav__links a{font-size:.72rem;letter-spacing:.2em}
+.hero__meta{font-size:.8rem;letter-spacing:.22em;color:rgba(246,241,231,.88)}
+.hero__scroll{font-size:.64rem;letter-spacing:.28em;color:rgba(246,241,231,.72)}
+.btn{font-size:.74rem;letter-spacing:.2em}
+.fact dt{font-size:.68rem;letter-spacing:.22em}
+.fact dd small{font-size:.84rem;color:rgba(229,220,201,.82)}
+.pillar p{font-size:1rem;color:var(--taupe)}
+.section--dark .pillar p{color:rgba(229,220,201,.84)}
+.amen li{font-size:1rem}
+.index__note{font-size:.74rem;letter-spacing:.16em}
+.section--dark .index__note{color:rgba(229,220,201,.8)}
+.field label,.dl dt{font-size:.7rem;letter-spacing:.2em}
+.form__note{font-size:.85rem}
+.form__status{font-size:.95rem}
+.portrait figcaption{font-size:.7rem;letter-spacing:.2em;color:rgba(246,241,231,.95)}
+.footer{font-size:.85rem;color:rgba(229,220,201,.82)}
+.footer__badges{font-size:.7rem;letter-spacing:.18em}
+.footer__legal p:last-child{color:rgba(229,220,201,.62)!important}
 
 /* motion */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity 1s cubic-bezier(.22,.61,.36,1),transform 1s cubic-bezier(.22,.61,.36,1)}
