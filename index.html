@@ -207,6 +207,41 @@ a{color:inherit}
 .footer__badges{font-size:.7rem;letter-spacing:.18em}
 .footer__legal p:last-child{color:rgba(229,220,201,.62)!important}
 
+/* mobile — measured at 386px in a real viewport, not assumed */
+@media(max-width:900px){
+  .nav{gap:.6rem;padding-inline:1.1rem}
+  .nav__mark{font-size:.58rem;letter-spacing:.14em;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .nav__cta{padding:.5rem .85rem;font-size:.66rem;letter-spacing:.14em;white-space:nowrap}
+  .hero__name{font-size:clamp(1.55rem,7vw,2.7rem);letter-spacing:.05em;text-indent:.05em}
+  .hero__inner{padding-inline:1.1rem}
+  .hero__eyebrow{font-size:.62rem;letter-spacing:.2em}
+  .hero__meta{font-size:.72rem;letter-spacing:.14em}
+  .hero__actions .btn{width:100%;text-align:center}
+  .hero{min-height:92svh}
+  .hero__inner{padding-bottom:8rem}
+  body{padding-bottom:4.5rem}       /* clearance for the action bar */
+  .anim-name{animation:fadeUp 1.2s ease both .3s}  /* trackIn would override mobile tracking */
+  .nav__cta{min-height:44px;display:flex;align-items:center}
+  .dl dd a{display:inline-block;padding-block:.55rem}   /* 44px tap target for phone/email */
+  .amen li{padding-block:1.35rem}
+}
+
+/* mobile action bar — replaces the nav links that collapse below 900px */
+.actionbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;display:none;
+  grid-template-columns:1fr 1fr;gap:1px;
+  background:rgba(195,161,91,.35);
+  padding-top:1px;backdrop-filter:blur(14px);
+}
+.actionbar a{
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  min-height:3.4rem;background:rgba(20,18,15,.96);color:var(--gold);
+  font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;
+}
+.actionbar a.is-primary{background:var(--gold);color:var(--ink)}
+@media(max-width:900px){.actionbar{display:grid}}
+@media(display-mode:standalone){.actionbar{padding-bottom:env(safe-area-inset-bottom)}}
+
 /* motion */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity 1s cubic-bezier(.22,.61,.36,1),transform 1s cubic-bezier(.22,.61,.36,1)}
 .reveal.is-in{opacity:1;transform:none}
@@ -239,10 +274,7 @@ a{color:inherit}
 
 <header class="hero" id="top">
   <div class="hero__media">
-    <video autoplay muted loop playsinline preload="metadata" poster="assets/hero-poster.jpg" aria-hidden="true">
-      <source src="assets/hero-1920.mp4" type="video/mp4" media="(min-width:900px)">
-      <source src="assets/hero-1280.mp4" type="video/mp4">
-    </video>
+    <video id="heroVideo" muted loop playsinline preload="none" poster="assets/hero-poster-1000.jpg" aria-hidden="true"></video>
   </div>
 
   <div class="hero__inner">
@@ -260,6 +292,11 @@ a{color:inherit}
 
   <a class="hero__scroll" href="#facts" aria-label="Scroll to content">Scroll<span></span></a>
 </header>
+
+<nav class="actionbar" aria-label="Quick actions">
+  <a href="tel:+18439996325" data-track="call">Call</a>
+  <a href="#enquire" class="is-primary">Enquire</a>
+</nav>
 
 <section class="facts" id="facts">
   <dl class="facts__grid">
@@ -359,7 +396,10 @@ a{color:inherit}
 <section class="section section--dark" id="advisor">
   <div class="wrap advisor reveal">
     <figure class="portrait" style="margin:0">
-      <img src="assets/dejana-portrait.jpg" alt="Dejana Ikonic, REALTOR with Coldwell Banker Sea Coast Advantage" width="1600" height="2000" loading="lazy">
+      <img src="assets/dejana-portrait.jpg"
+           srcset="assets/dejana-portrait-900.jpg 900w, assets/dejana-portrait.jpg 1600w"
+           sizes="(max-width:820px) 92vw, 34vw"
+           alt="Dejana Ikonic, REALTOR with Coldwell Banker Sea Coast Advantage" width="1600" height="2000" loading="lazy" decoding="async">
       <figcaption>Dejana Ikonic &middot; REALTOR&reg;</figcaption>
     </figure>
     <div class="prose">
@@ -469,7 +509,7 @@ a{color:inherit}
 <footer class="footer">
   <div class="wrap">
     <div class="footer__top">
-      <img class="footer__mono" src="assets/monogram.png" alt="" width="52" height="61">
+      <img class="footer__mono" src="assets/monogram-160.png" alt="" width="52" height="61" loading="lazy" decoding="async">
       <div class="footer__badges">
         <span>Equal Housing Opportunity</span><span>REALTOR&reg;</span><span>MLS</span>
       </div>
@@ -547,6 +587,28 @@ if (CONFIG.ga4) {
   gtag('config', CONFIG.ga4);
 }
 const track = (n, p) => { if (CONFIG.ga4) gtag('event', n, p || {}); };
+
+/* Hero video, chosen in JS rather than via <source media> — Safari's support for
+   that attribute is unreliable, and getting it wrong ships 8 MB to a phone.
+   Skipped entirely on a metered/slow connection or under reduced-motion; the
+   poster carries the hero on its own. */
+(function heroVideo(){
+  const v = document.getElementById('heroVideo');
+  if (!v) return;
+  const small  = matchMedia('(max-width:899px)').matches;
+  const still  = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const c      = navigator.connection || {};
+  const frugal = c.saveData === true || /^(slow-2g|2g|3g)$/.test(c.effectiveType || '');
+
+  if (small) v.poster = 'assets/hero-poster-1000.jpg';
+  else       v.poster = 'assets/hero-poster.jpg';
+  if (still || frugal) { track('hero_video_skipped', { reason: still ? 'reduced-motion' : 'save-data' }); return; }
+
+  v.src = small ? 'assets/hero-1280.mp4' : 'assets/hero-1920.mp4';
+  v.preload = 'auto';
+  v.load();
+  v.play().catch(() => {});   // iOS Low Power Mode refuses; poster stays, which is fine
+})();
 
 const reviewLink = document.getElementById('reviewLink');
 if (CONFIG.googleReviewUrl) {
