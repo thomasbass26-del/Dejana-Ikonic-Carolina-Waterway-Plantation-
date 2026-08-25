@@ -1,33 +1,30 @@
-# Dejana Ikonic — Landing Page
+# Carolina Waterway Plantation — Community Landing Page
 
-Single-file HTML + an `assets/` folder. Drops straight onto Hostinger or GitHub Pages, no build step.
+A community lead-generation page for Carolina Waterway Plantation (gated ICW community,
+Carolina Forest, Myrtle Beach SC), with Dejana Ikonic as the representing advisor.
+
+Single-file HTML plus `assets/`. No build step. Deployed via GitHub Pages.
 
 ```
-index.html          ← the page (monogram + hero poster inlined as base64)
+index.html          ← 35 KB, assets referenced as files (not base64)
 assets/
-  hero-1920.mp4     ← 1080p hero loop, 8.0 MB  (desktop)
-  hero-1280.mp4     ← 720p hero loop, 2.6 MB   (mobile)
-  hero-poster.jpg   ← first-frame poster / OG image
-  monogram.png      ← DI monogram, white keyed out to real alpha, 861×1002
-  favicon-180.png   ← apple-touch-icon
+  hero-1920.mp4     ← 1080p CWP aerial loop, 8.0 MB (desktop)
+  hero-1280.mp4     ← 720p, 2.6 MB (mobile)
+  hero-poster.jpg   ← poster / OG image
+  monogram.png      ← DI monogram, white keyed to alpha, 861×1002
+  favicon-180.png
 ```
 
-## The video
+## Page architecture
 
-Your Dropbox file is **375 MB, 4K, 59 s** — unusable as a web hero. I pulled the strongest
-21 seconds (0:38–0:59, the Waterway stretch with the private docks, boat lifts and pools) and
-re-encoded it two ways. Total hero payload is now ~8 MB desktop / ~2.6 MB mobile, `faststart`,
-muted, looping.
+Hero (the community) → fact strip → the community → **on the water** → homes →
+location & schools → Dejana as advisor → enquiry form → contact.
 
-Command used, if you want a different segment:
+The water section is the conversion argument: most Grand Strand communities sell a water
+*view*; this one sells a boat *launch*. Two private ramps, a community day dock, and fenced
+boat/RV storage inside the gate.
 
-```bash
-ffmpeg -ss 38 -t 21 -i source.mp4 -an \
-  -vf "scale=1920:-2,format=yuv420p" \
-  -c:v libx264 -preset slow -crf 26 -movflags +faststart hero-1920.mp4
-```
-
-## Config — one block, bottom of index.html
+## Config — one block at the bottom of index.html
 
 ```js
 const CONFIG = {
@@ -38,58 +35,48 @@ const CONFIG = {
 };
 ```
 
-Until `leadEndpoint` is set, the form falls back to a prefilled `mailto:` — it never silently
-drops a lead. Honeypot field, UTM capture and referrer are already wired into the payload.
+Until `leadEndpoint` is set the form falls back to a prefilled `mailto:` — it never silently
+drops a lead. Honeypot, UTM capture, referrer and a `community` tag are already in the payload,
+so leads from this page segment cleanly if you build more community pages on the same hook.
 
-Also in `<head>`: `google-site-verification` meta for Search Console.
-
-## Placeholders that must be filled before this goes live
+## Placeholders to fill before promoting this
 
 | Where | What |
 |---|---|
-| `#advisor` | Portrait — `assets/dejana-portrait.jpg`, 4:5, 1600×2000. Placeholder frame is in place. |
+| `<head>` | `REPLACE_WITH_GSC_TOKEN`; canonical + OG URLs if a custom domain is added |
 | Footer | `REPLACE_LICENSE_NUMBER` — her SC license number |
-| Footer | `REPLACE_WITH_CBSCA_APPROVED_FRANCHISE_DISCLAIMER` — CBSCA has required franchise language; use theirs verbatim |
+| Footer | `REPLACE_WITH_CBSCA_APPROVED_FRANCHISE_DISCLAIMER` — use CBSCA's exact language |
 | JSON-LD | `REPLACE_GOOGLE_BUSINESS_PROFILE_URL` |
-| `<head>` | `REPLACE_WITH_GSC_TOKEN`, canonical + OG URLs (currently `dejanaikonic.com`) |
 
-## Google
+## Facts on the page — verify before promoting
 
-I can't link her account from here — that needs her password, and I won't handle those.
-What she needs to do, in this order:
+Sourced from public listing and community sites, not from the HOA:
 
-1. **Google Business Profile** — create/claim it as a *Service area business* (agents can't use the
-   brokerage address as their own storefront). Once verified, grab the short review link from
-   Profile → Ask for reviews, and paste it into `CONFIG.googleReviewUrl` and the JSON-LD `sameAs`.
-2. **Search Console** — add `dejanaikonic.com` as a domain property, take the HTML-tag token, paste
-   into the meta in `<head>`. Which Google account holds it is worth deciding now — your
-   `triskopedigital@gmail.com` ops account keeps it manageable if you're the one maintaining it;
-   her own account is cleaner if she ever leaves.
-3. **GA4** — new property, paste the measurement ID into `CONFIG.ga4`. `generate_lead`,
-   `contact_call`, `contact_email` and `google_review_click` events are already firing.
+- ~100 custom home sites; development began early 2000s, first homes 2004
+- Private boat ramp (two launches cited), community day dock, fenced boat/RV storage
+- Pool, clubhouse, tennis courts, waterfront gazebo, playground, gated entry
+- HOA ≈ **$105/month** — *oldest figure on the page, from a 2023 source.* Management contact
+  cited as Litus, (843) 448-9000. **Confirm the current number before this goes in an ad.**
+- Zoned River Oaks Elementary / Ocean Bay Middle / Carolina Forest High — verify with Horry
+  County Schools, attendance lines move
+- ~6 miles to the Atlantic; off River Oaks Drive near World Tour Golf Resort
 
-The JSON-LD `RealEstateAgent` block is the piece that actually does work for her in search — it
-declares the four languages, the office address and the communities, and it's the thing most agent
-sites on the Strand don't have.
+No price band is printed on the page by design — a figure in HTML goes stale in a season and
+then works against her. The page routes price questions to a current market report instead,
+which is also the better lead capture.
 
-## One honest note on positioning
+The footer carries a disclaimer that this is an independent community guide, not an HOA
+publication. Keep it. Community pages that read as official draw complaints.
 
-You asked for Louis Vuitton / Hermès. The page is built to that register — Bodoni, wide-tracked
-caps, one script signature, gold hairlines, nothing bright, no card grids.
+## Video
 
-But the public record doesn't back it yet. Zillow shows 7 total sales, a $170K–$799K band and a
-$404K average. If a $1.5M waterfront seller checks her before the listing appointment — and they do —
-the gap between the page and the data reads badly.
+Source was 375 MB / 4K / 59 s. The page uses 0:38–0:59 — the Waterway stretch with the private
+docks, boat lifts and pools. Re-encode a different segment with:
 
-Two ways through:
+```bash
+ffmpeg -ss 38 -t 21 -i source.mp4 -an \
+  -vf "scale=1920:-2,format=yuv420p" \
+  -c:v libx264 -preset slow -crf 26 -movflags +faststart hero-1920.mp4
+```
 
-- **Lead with the language advantage.** Four languages into the Balkan/European second-home buyer
-  pool is a real, defensible, uncommon edge, and it's what I built the copy around. It carries
-  luxury without claiming a price band she hasn't sold into yet.
-- **Fix the data trail.** Zillow shows zero reviews. Seven closings' worth of clients is seven
-  reviews she doesn't have. That's the cheapest, fastest thing on this list.
-
-Also: the copy currently says *individual listing leader, Grand Strand North, February 2026* —
-that's from the CBSCA announcement and it's real. I did **not** claim CLHMS, Global Luxury Property
-Specialist, or any designation. If she's earned one, tell me and I'll add it; if not, leave it out,
-because those are verifiable and buyers at that level verify.
+Note: ffmpeg is not currently installed on this machine.
